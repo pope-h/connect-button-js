@@ -1,7 +1,6 @@
 import { createWeb3Modal, defaultConfig } from "@web3modal/ethers/react";
-import ConnectButton from "./components/ConnectButton";
-import { useState } from "react";
-import styles from "./styles/Home.module.css";
+// import ConnectButton from "./components/ConnectButton";
+import useWallectConnect from "./hooks/useWalletConnect";
 
 // 1. Get projectId
 const projectId = "57c3ed3f7633af987eda789d503edfee"; // project ID gotten from a sample project
@@ -28,6 +27,13 @@ const ethersConfig = defaultConfig({
   /*Required*/
   metadata,
 
+  auth: {
+    email: false, // default to true
+    socials: [],
+    showWallets: true, // default to true
+    walletFeatures: true, // default to true
+  },
+
   /*Optional*/
   enableEIP6963: true, // true by default
   enableInjected: true, // true by default
@@ -45,45 +51,7 @@ createWeb3Modal({
 });
 
 export default function App() {
-  const [isNetworkSwitchHighlighted, setIsNetworkSwitchHighlighted] =
-    useState(false);
-  const [isConnectHighlighted, setIsConnectHighlighted] = useState(false);
+  const wallectConnect = useWallectConnect();
 
-  const closeAll = () => {
-    setIsNetworkSwitchHighlighted(false);
-    setIsConnectHighlighted(false);
-  };
-  return (
-    <>
-      <header>
-        <div
-          className={styles.backdrop}
-          style={{
-            opacity: isConnectHighlighted || isNetworkSwitchHighlighted ? 1 : 0,
-          }}
-        />
-        <div className={styles.header}>
-          <div className={styles.buttons}>
-            <div
-              onClick={closeAll}
-              className={`${styles.highlight} ${
-                isNetworkSwitchHighlighted ? styles.highlightSelected : ``
-              }`}
-            >
-              <w3m-network-button />
-            </div>
-            <div
-              onClick={closeAll}
-              className={`${styles.highlight} ${
-                isConnectHighlighted ? styles.highlightSelected : ``
-              }`}
-            >
-              <ConnectButton />
-              {/* Could also use <w3m-button /> */}
-            </div>
-          </div>
-        </div>
-      </header>
-    </>
-  );
+  return wallectConnect;
 }
